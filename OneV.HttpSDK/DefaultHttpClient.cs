@@ -1,4 +1,8 @@
-﻿using Jayrock.Json;
+﻿/*
+ 使用支付宝的SDK，改成自己需要的HTTP请求
+ 
+ */
+using Jayrock.Json;
 using Jayrock.Json.Conversion;
 using OneV.HttpSDK.Parser;
 using System;
