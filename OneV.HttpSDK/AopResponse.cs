@@ -17,7 +17,7 @@ namespace OneV.HttpSDK
         /// 错误码
         /// 对应 ErrCode
         /// </summary>
-        [XmlElement("code")]
+        [XmlElement("Code")]
         public string Code
         {
             get { return code; }
@@ -28,7 +28,7 @@ namespace OneV.HttpSDK
         /// 错误信息
         /// 对应 ErrMsg
         /// </summary>
-        [XmlElement("msg")]
+        [XmlElement("Msg")]
         public string Msg
         {
             get { return msg; }
