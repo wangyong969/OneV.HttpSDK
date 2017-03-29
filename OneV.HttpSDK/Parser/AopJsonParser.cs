@@ -23,25 +23,24 @@ namespace OneV.HttpSDK.Parser
             IDictionary json = JsonConvert.Import(body) as IDictionary;
             if (json != null)
             {
-                //IDictionary data = null;
+                IDictionary data = null;
 
-                //// 忽略根节点的名称
-                //foreach (object key in json.Keys)
-                //{
-                //    data = json[key] as IDictionary;
-                //    if (data != null && data.Count > 0)
-                //    {
-                //        break;
-                //    }
-                //}
+                // 忽略根节点的名称
+                foreach (object key in json.Keys)
+                {
+                    data = json[key] as IDictionary;
+                    if (data != null && data.Count > 0)
+                    {
+                        break;
+                    }
+                }
 
-                //if (data != null)
-                //{
-                IAopReader reader = new AopJsonReader(json);
-                rsp = (T)AopJsonConvert(reader, typeof(T));
-                //}
+                if (data != null)
+                {
+                    IAopReader reader = new AopJsonReader(data);
+                    rsp = (T)AopJsonConvert(reader, typeof(T));
+                }
             }
-
             if (rsp == null)
             {
                 rsp = Activator.CreateInstance<T>();
