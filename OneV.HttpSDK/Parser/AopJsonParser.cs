@@ -137,6 +137,26 @@ namespace OneV.HttpSDK.Parser
             attrs[type.FullName] = tas;
             return tas;
         }
+        static bool ConvertToDateTime(string jsonDate, out DateTime dtime)
+        {
+            dtime = DateTime.MinValue;
+            if (jsonDate.IndexOf("/Date") < 0) return false;
+            try
+            {
+                string timelong = jsonDate.Replace("/Date(", "").Replace(")/", "");
+                // JavaScript uses the unix epoch of 1/1/1970. Note, it's important to call ToLocalTime()
+                // after doing the time conversion, otherwise we'd have to deal with daylight savings hooey.
+                DateTime unixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+                Double milliseconds = Convert.ToDouble(timelong);
+                dtime = unixEpoch.AddMilliseconds(milliseconds).ToLocalTime();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
 
         protected static readonly DAopConvert AopJsonConvert = delegate (IAopReader reader, Type type)
         {
@@ -169,6 +189,22 @@ namespace OneV.HttpSDK.Parser
                         if (tmp != null)
                         {
                             value = tmp.ToString();
+                        }
+                    }
+                    else if (typeof(DateTime) == ta.ItemType)
+                    {
+                        object tmp = reader.GetPrimitiveObject(itemName);
+                        if (tmp != null)
+                        {
+                            DateTime valueTime;
+                            if (ConvertToDateTime(tmp.ToString(), out valueTime))
+                            {
+                                value = valueTime;
+                            }
+                            else
+                            {
+                                value = Convert.ChangeType(tmp, ta.ItemType);
+                            }
                         }
                     }
                     else if (typeof(long) == ta.ItemType)
