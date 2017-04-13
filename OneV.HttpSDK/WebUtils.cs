@@ -49,8 +49,18 @@ namespace OneV.HttpSDK
             string token = string.Empty;
             if (parameters.TryGetValue("Token", out token))
             {
-                req.Headers.Add("Token", token);
+                if (!string.IsNullOrWhiteSpace(token))
+                    req.Headers.Add("Token", token);
             }
+
+            string appID = string.Empty;
+            if (parameters.TryGetValue("AppID", out appID))
+            {
+                if (!string.IsNullOrWhiteSpace(appID))
+                    req.Headers.Add("AppID", appID);
+            }
+
+
             byte[] postData = Encoding.GetEncoding(charset).GetBytes(BuildQuery(parameters, charset));
             Stream reqStream = req.GetRequestStream();
             reqStream.Write(postData, 0, postData.Length);
@@ -96,7 +106,7 @@ namespace OneV.HttpSDK
             req.ServicePoint.Expect100Continue = false;
             req.Method = method;
             req.KeepAlive = true;
-            req.UserAgent = "Aop4Net";
+            req.UserAgent = "NetD9";
             req.Timeout = this._timeout;
             return req;
         }
