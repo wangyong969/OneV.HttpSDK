@@ -197,7 +197,7 @@ namespace OneV.HttpSDK.Parser
                         if (tmp != null)
                         {
                             DateTime valueTime;
-                            if (ConvertToJsonDateTime(tmp.ToString(), out valueTime))
+                            if (JsonConvertToDateTime(tmp.ToString(), out valueTime))
                             {
                                 value = valueTime;
                             }
