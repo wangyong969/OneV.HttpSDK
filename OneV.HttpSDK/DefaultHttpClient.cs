@@ -20,6 +20,7 @@ namespace OneV.HttpSDK
         public const string TIMESTAMP = "timestamp";
         public const string VERSION = "version";
         public const string CHARSET = "charset";
+        public const string PROD_CODE = "ProVer";
 
         private string format;
         private string version;
@@ -74,7 +75,7 @@ namespace OneV.HttpSDK
             //txtParams.Add(SIGN_TYPE, signType);
             //txtParams.Add(TERMINAL_TYPE, request.GetTerminalType());
             //txtParams.Add(TERMINAL_INFO, request.GetTerminalInfo());
-            //txtParams.Add(PROD_CODE, request.GetProdCode());
+            txtParams.Add(PROD_CODE, request.GetProdCode());
             txtParams.Add(CHARSET, charset);
             // 添加签名参数
             //txtParams.Add(SIGN, AopUtils.SignAopRequest(txtParams, privateKeyPem, charset, this.keyFromFile, signType));

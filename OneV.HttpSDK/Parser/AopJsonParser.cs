@@ -137,7 +137,7 @@ namespace OneV.HttpSDK.Parser
             attrs[type.FullName] = tas;
             return tas;
         }
-        static bool ConvertToDateTime(string jsonDate, out DateTime dtime)
+        static bool JsonConvertToDateTime(string jsonDate, out DateTime dtime)
         {
             dtime = DateTime.MinValue;
             if (jsonDate.IndexOf("/Date") < 0) return false;
@@ -197,7 +197,7 @@ namespace OneV.HttpSDK.Parser
                         if (tmp != null)
                         {
                             DateTime valueTime;
-                            if (ConvertToDateTime(tmp.ToString(), out valueTime))
+                            if (ConvertToJsonDateTime(tmp.ToString(), out valueTime))
                             {
                                 value = valueTime;
                             }
