@@ -14,6 +14,7 @@ namespace OneV.HttpSDK
 {
     public class DefaultHttpClient : IHttpClient
     {
+        public const string APP_ID = "AppID";
         public const string CONTENT_KEY = "content";
         public const string METHOD = "method";
         public const string FORMAT = "format";
@@ -21,6 +22,7 @@ namespace OneV.HttpSDK
         public const string VERSION = "version";
         public const string CHARSET = "charset";
         public const string PROD_CODE = "ProVer";
+        public const string ACCESS_TOKEN = "Token";
 
         private string format;
         private string version;
@@ -40,11 +42,26 @@ namespace OneV.HttpSDK
         private WebUtils webUtils;
 
         public DefaultHttpClient(string serverUrl)
+            : this(serverUrl, string.Empty)
+        {
+
+        }
+
+        public DefaultHttpClient(string serverUrl, string appid)
         {
             this.serverUrl = serverUrl;
+            this.appId = appid;
             this.webUtils = new WebUtils();
         }
 
+
+        private string appId;
+
+        public string AppID
+        {
+            get { return appId; }
+            set { appId = value; }
+        }
 
 
         public T Execute<T>(IAopRequest<T> request, string accessToken) where T : AopResponse
@@ -65,13 +82,12 @@ namespace OneV.HttpSDK
             }
             // 添加协议级请求参数
             AopDictionary txtParams = new AopDictionary(request.GetParameters());
-
             txtParams.Add(METHOD, request.GetApiName());
             txtParams.Add(VERSION, apiVersion);
-            //txtParams.Add(APP_ID, appId);
-            txtParams.Add(FORMAT, format);
+            txtParams.Add(APP_ID, appId);
+            txtParams.Add(FORMAT, Format);
             txtParams.Add(TIMESTAMP, DateTime.Now);
-            //txtParams.Add(ACCESS_TOKEN, accessToken);
+            txtParams.Add(ACCESS_TOKEN, accessToken);
             //txtParams.Add(SIGN_TYPE, signType);
             //txtParams.Add(TERMINAL_TYPE, request.GetTerminalType());
             //txtParams.Add(TERMINAL_INFO, request.GetTerminalInfo());

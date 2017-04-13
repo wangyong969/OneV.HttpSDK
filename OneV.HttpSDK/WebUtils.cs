@@ -25,6 +25,17 @@ namespace OneV.HttpSDK
         }
 
         /// <summary>
+        /// 请求与响应的超时时间
+        /// </summary>
+        public int Hander
+        {
+            get { return this._timeout; }
+            set { this._timeout = value; }
+        }
+
+
+
+        /// <summary>
         /// 执行HTTP POST请求。
         /// </summary>
         /// <param name="url">请求地址</param>
@@ -35,7 +46,11 @@ namespace OneV.HttpSDK
         {
             HttpWebRequest req = GetWebRequest(url, "POST");
             req.ContentType = "application/x-www-form-urlencoded;charset=" + charset;
-
+            string token = string.Empty;
+            if (parameters.TryGetValue("Token", out token))
+            {
+                req.Headers.Add("Token", token);
+            }
             byte[] postData = Encoding.GetEncoding(charset).GetBytes(BuildQuery(parameters, charset));
             Stream reqStream = req.GetRequestStream();
             reqStream.Write(postData, 0, postData.Length);
