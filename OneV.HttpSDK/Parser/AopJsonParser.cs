@@ -49,6 +49,8 @@ namespace OneV.HttpSDK.Parser
             if (rsp != null)
             {
                 rsp.Body = body;
+                rsp.Code = Convert.ToInt32(json["Code"] ?? "-10001");
+                rsp.Msg = (json["Msg"] ?? "参数值不存在或为NULL").ToString();
             }
 
             return rsp;
@@ -242,8 +244,10 @@ namespace OneV.HttpSDK.Parser
         {
             IDictionary json = JsonConvert.Import(body) as IDictionary;
             Console.WriteLine(json);
-            return (string)json["sign"];
+            return (string)json["Sign"];
         }
+
+
 
         private static string GetSignSourceData(IAopRequest<T> request, string body)
         {

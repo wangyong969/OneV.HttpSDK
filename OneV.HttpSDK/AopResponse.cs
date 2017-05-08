@@ -9,7 +9,7 @@ namespace OneV.HttpSDK
     [Serializable]
     public abstract class AopResponse
     {
-        private string code;
+        private int code;
         private string msg;
         private string body;
 
@@ -18,7 +18,7 @@ namespace OneV.HttpSDK
         /// 对应 ErrCode
         /// </summary>
         [XmlElement("Code")]
-        public string Code
+        public int Code
         {
             get { return code; }
             set { code = value; }
