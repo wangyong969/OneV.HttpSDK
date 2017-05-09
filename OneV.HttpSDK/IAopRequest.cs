@@ -69,6 +69,11 @@ namespace OneV.HttpSDK
         /// </summary>
         /// <returns>文本请求参数字典</returns>
         IDictionary<string, string> GetParameters();
+        /// <summary>
+        /// 获取BizModel
+        /// </summary>
+        /// <returns></returns>
+        AopObject GetModel();
 
     }
 }

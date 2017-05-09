@@ -108,6 +108,9 @@ namespace OneV.HttpSDK
             }
             // 添加协议级请求参数
             AopDictionary txtParams = new AopDictionary(request.GetParameters());
+
+            // 序列化BizModel
+            txtParams = SerializeModel(txtParams, request);
             txtParams.Add(METHOD, request.GetApiName());
             txtParams.Add(VERSION, apiVersion);
             txtParams.Add(APP_ID, appId);
@@ -120,30 +123,25 @@ namespace OneV.HttpSDK
 
             if (request.GetNeedEncrypt())
             {
-
                 if (string.IsNullOrEmpty(txtParams[CONTENT_KEY]))
                 {
-
-                    throw new AopException("api request Fail ! The reason: encrypt request is not supported!");
+                    throw new AopException("API 请求异常! 来源: 加密内容为空!");
                 }
 
                 if (string.IsNullOrEmpty(this.encyptKey) || string.IsNullOrEmpty(this.encyptType))
                 {
-                    throw new AopException("encryptType or encryptKey must not null!");
+                    throw new AopException("API 请求异常! 来源: 加密类型或加密Key不能为空");
                 }
 
                 if (!"AES".Equals(this.encyptType))
                 {
-                    throw new AopException("api only support Aes!");
-
+                    throw new AopException("API暂时只支持AES加密");
                 }
-
-                string encryptContent = string.Empty;// AopUtils.AesEncrypt(this.encyptKey, txtParams[BIZ_CONTENT], this.charset);
+                string encryptContent = txtParams[CONTENT_KEY];// AopUtils.AesEncrypt(this.encyptKey, txtParams[BIZ_CONTENT], this.charset);
                 txtParams.Remove(CONTENT_KEY);
                 txtParams.Add(CONTENT_KEY, encryptContent);
                 txtParams.Add(ENCRYPT_TYPE, this.encyptType);
             }
-
 
             // 添加签名参数AopUtils.SignAopRequest(txtParams, privateKeyPem, charset, this.keyFromFile, signType)
             txtParams.Add(SIGN, string.Empty);
@@ -153,7 +151,7 @@ namespace OneV.HttpSDK
             IAopParser<T> parser = null;
             if ("xml".Equals(format))
             {
-                throw new NotImplementedException("暂时不支持xml进行序列号");
+                throw new NotImplementedException("暂时不支持xml进行序列号!");
                 //parser = new AopXmlParser<T>();
                 //rsp = parser.Parse(body, charset);
             }
@@ -177,7 +175,46 @@ namespace OneV.HttpSDK
             webUtils.Timeout = timeOut;
         }
 
+        #region Model Serialize
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="requestParams"></param>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        private AopDictionary SerializeModel<T>(AopDictionary requestParams, IAopRequest<T> request) where T : AopResponse
+        {
+            AopDictionary result = requestParams;
+            Boolean isBizContentEmpty = !requestParams.ContainsKey(CONTENT_KEY) || String.IsNullOrEmpty(requestParams[CONTENT_KEY]);
+            if (isBizContentEmpty && request.GetModel() != null)
+            {
+                AopObject bizModel = request.GetModel();
+                String content = Serialize(bizModel);
+                result.Add(CONTENT_KEY, content);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// AopObject序列化
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        private String Serialize(AopObject obj)
+        {
+            // 使用AopModelParser序列化对象
+            AopModelParser parser = new AopModelParser();
+            JsonObject jo = parser.serializeAopObject(obj);
+
+            // 根据JsonObject导出String格式的Json
+            String result = JsonConvert.ExportToString(jo);
+
+            return result;
+        }
+
+        #endregion
 
     }
 }
